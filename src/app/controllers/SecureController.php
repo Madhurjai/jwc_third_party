@@ -1,4 +1,5 @@
 <?php
+
 use Phalcon\Mvc\Controller;
 use Phalcon\Acl\Adapter\Memory;
 use Phalcon\Acl\Component;
@@ -65,7 +66,7 @@ class SecureController extends Controller
     }
     public function adduserAction()
     {
-        if($this->request->get('role')) {
+        if ($this->request->get('role')) {
             $user = new Addusers();
             $signer  = new Hmac();
             $role = $this->request->getPost('role');
@@ -75,37 +76,36 @@ class SecureController extends Controller
                 "iss" => "http://example.org",
                 "aud" => "http://example.com",
                 "iat" => 1356999524,
-                "nbf" => 1357000000 ,
-                'name' => $name ,
+                "nbf" => 1357000000,
+                'name' => $name,
                 'role' => $role
             );
             $jwt = JWT::encode($payload, $key, 'HS256');
-            
+
             $user->assign(
                 $this->request->getPost(),
                 [
                     'name',
-                    'email', 
-                    
+                    'email',
+
                 ],
                 $user->role = $jwt
             );
-    
+
             $success = $user->save();
             header('Location: http://localhost:8080/');
-    
         }
     }
 
 
-   
+
     public function buildaclAction()
     {
 
         $aclfile = APP_PATH . '/security/acl.cache';
         if (true !== is_file($aclfile)) {
             $acl = new Memory();
-        
+
             $acl->addRole("admin");
             $acl->addComponent("Index", [
                 'index'
@@ -139,7 +139,7 @@ class SecureController extends Controller
 
 
             // $role = $this->request->get('role');
-            // header("Location: http://localhost:8080/?roles=".$arr['role']);
+            header("Location: http://localhost:8080/");
         }
     }
 }
